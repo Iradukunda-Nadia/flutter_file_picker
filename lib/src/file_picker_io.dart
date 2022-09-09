@@ -80,14 +80,21 @@ class FilePickerIO extends FilePicker {
     }
     try {
       _eventSubscription?.cancel();
-      if (onFileLoading != null) {
+      _eventSubscription = _eventChannel.receiveBroadcastStream().listen(
+            (data) {
+                print(data);
+          }, onError: (ex, stacktrace) {
+        print('exception: $ex');
+        print('stacktrace: $stacktrace');}
+      );
+      /*if (onFileLoading != null) {
         _eventSubscription = _eventChannel.receiveBroadcastStream().listen(
               (data) => onFileLoading((data as bool)
                   ? FilePickerStatus.picking
                   : FilePickerStatus.done),
               onError: (error) => throw Exception(error),
             );
-      }
+      }*/
 
       final List<Map>? result = await _channel.invokeListMethod(type, {
         'allowMultipleSelection': allowMultipleSelection,
